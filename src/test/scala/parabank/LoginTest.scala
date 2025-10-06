@@ -17,7 +17,7 @@ class LoginTest extends Simulation{
     exec(http("Login request")
       .post(s"/login/$username/$password")
       .check(status.is(200))
-      .check(responseTimeInMillis.lte(2000)
+      .check(responseTimeInMillis.lte(2000))
     )
 
   val normalLoad = scenario("Normal Load - limit of 100 concurrent users")
@@ -28,11 +28,12 @@ class LoginTest extends Simulation{
 
   // 3 Load Scenario
   setUp(
-    normalLoad.inject(rampUsers(100).to(15).during(10.toSeconds))
+    normalLoad.inject(rampUsers(100).during(10.toSeconds))
       .protocols(httpConf),
 
     peakLoad.inject(nothingFor(15.toSeconds),
-      rampUsers(200).during(20.toSeconds)).protocols(httpConf)
+      rampUsers(200).during(20.toSeconds))
+      .protocols(httpConf)
   )
     .assertions(
       details("Normal Load - limit of 100 concurrent users")
