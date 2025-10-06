@@ -10,12 +10,6 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 1 Login auth
-  exec(http("Login request")
-    .get(s"/login/$username/$password")
-    .check(status.is(200))
-  )
-
   // 2 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
