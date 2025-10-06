@@ -28,11 +28,11 @@ class LoginTest extends Simulation{
 
   // 3 Load Scenario
   setUp(
-    normalLoad.inject(rampUsers(100).during(10.toSeconds))
+    normalLoad.inject(rampUsers(100).during(10.seconds))
       .protocols(httpConf),
 
-    peakLoad.inject(nothingFor(15.toSeconds),
-      rampUsers(200).during(20.toSeconds))
+    peakLoad.inject(nothingFor(15.seconds),
+      rampUsers(200).during(20.seconds))
       .protocols(httpConf)
   )
     .assertions(
