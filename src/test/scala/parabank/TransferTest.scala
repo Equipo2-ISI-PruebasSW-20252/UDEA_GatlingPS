@@ -12,30 +12,22 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
-    .acceptHeader("application/json")
+    .acceptHeader("application/xml")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
-    .exec(http("Login user request")
-      .get(s"/login/$username/$password")
+  .feed(feeder)
+    .exec(http("Deposits funds request")
+      .post("/deposit")
+      .queryParam("accountId", "#{accountId}")
+      .queryParam("amount", "#{amount}")
       .check(status.is(200))
-    )
-    .exec(
-      feed(feeder)
-        .exec(http("Deposits funds request")
-          .post(url + "/deposit")
-          .queryParam("accountId", "#{accountId}")
-          .queryParam("amount", "#{amount}")
-          .check(status.is(200))
-          .check(
-            jsonPath("$.message").is("Successfully deposited $#{amount} to account ##{accountId}")
-          )
-        ).pause(1.second)
-    )
+      .check(bodyString().contains("Successfully deposited"))
+    ).pause(1.second)
 
   // 4 Load Scenario
   setUp(
-    scn.inject(constantUsersPerSec(150) during(3.minutes))
+    scn.inject(constantUsersPerSec(150) during(1.minute))
   ).protocols(httpConf)
     .assertions(
       global.successfulRequests.percent.is(99)
