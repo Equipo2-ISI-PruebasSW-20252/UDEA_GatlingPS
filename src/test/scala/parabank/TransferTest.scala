@@ -1,11 +1,46 @@
 package parabank
 
+import scala.concurrent.duration.DurationInt
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import parabank.Data._
 
 class TransferTest extends Simulation{
-  // 1 Http Conf
-  // 2 Scenario Definition
-  // 3 Load Scenario
+
+  // 0 Define feeder
+  val feeder = csv("transaction.csv").circular
+
+  // 1 Login auth
+  exec(http("Login request")
+    .get(s"/login/$username/$password")
+    .check(status.is(200))
+  )
+
+  // 2 Http Conf
+  val httpConf = http.baseUrl(url)
+    .acceptHeader("application/json")
+    .check(status.is(200))
+
+  // 3 Scenario Definition
+  val scn = scenario("Transactions")
+    .exec(
+      feed(feeder)
+        .exec(http("Deposits funds request")
+          .post("/deposit")
+          .queryParam("accountId", "#{accountId}")
+          .queryParam("amount", "#{amount}")
+          .check(status.is(200))
+          .check(
+            jsonPath("$.message").is("Successfully deposited $#{amount} to account ##{accountID}")
+          )
+        ).pause(1.second)
+    )
+
+  // 4 Load Scenario
+  setUp(
+    scn.inject(constantUsersPerSec(150) during(3.minutes))
+  ).protocols(httpConf)
+    .assertions(
+      global.successfulRequests.percent.is(100)
+    )
 }
