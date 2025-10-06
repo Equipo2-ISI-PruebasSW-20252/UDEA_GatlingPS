@@ -17,7 +17,7 @@ class LoginTest extends Simulation{
     exec(http("Login request")
       .post(s"/login/$username/$password")
       .check(status.is(200))
-      .check(responseTimeInMillis(2000))
+      .check(responseTimeInMillis.lte(2000)
     )
 
   val normalLoad = scenario("Normal Load - limit of 100 concurrent users")
