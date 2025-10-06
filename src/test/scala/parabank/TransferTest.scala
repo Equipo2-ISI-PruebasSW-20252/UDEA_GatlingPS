@@ -10,25 +10,28 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 1 Http Conf - Configurar para seguir redirects como Postman
+  // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
     .acceptEncodingHeader("gzip, deflate, br")
     .connectionHeader("keep-alive")
-    // Por defecto Gatling sigue redirects, pero lo hacemos explícito
 
-  // 2 Scenario Definition - SIN LOGIN
+  // 2 Scenario Definition
   val scn = scenario("Transactions")
     .feed(feeder)
     .exec(http("Deposits funds request")
-      .post("/parabank/services/bank/deposit")
-      .queryParam("accountId", "#{accountId}") // Usar queryParam en lugar de URL manual
+      .post("/deposit")
+      .queryParam("accountId", "#{accountId}")
       .queryParam("amount", "#{amount}")
-      .check(status.in(200, 201, 301, 302)) // Aceptar redirects también
+      .check(status.is(200))
+      .check(regex("Successfully deposited").exists)
     )
 
   // 4 Load Scenario
   setUp(
-    scn.inject(atOnceUsers(1)) // Solo 1 para debug
+    scn.inject(constantUsersPerSec(150) during(30.seconds))
   ).protocols(httpConf)
+    .assertions(
+      global.successfulRequests.percent.is(99)
+    )
 }
