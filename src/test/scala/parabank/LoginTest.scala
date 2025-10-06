@@ -14,14 +14,34 @@ class LoginTest extends Simulation{
 
   // 2 Scenario Definition
   val scn = scenario("Login").
-    exec(http("login")
-      .get(s"/login/$username/$password")
-       //Recibir información de la cuenta
+    exec(http("Login request")
+      .post(s"/login/$username/$password")
       .check(status.is(200))
+      .check(responseTimeInMillis(2000))
     )
+
+  val normalLoad = scenario("Normal Load - limit of 100 concurrent users")
+    .exec(scn)
+
+  val peakLoad = scenario("Peak Load - limit of 200 concurrent users")
+    .exec(scn)
 
   // 3 Load Scenario
   setUp(
-    scn.inject(rampUsersPerSec(5).to(15).during(30))
-  ).protocols(httpConf);
+    normalLoad.inject(rampUsers(100).to(15).during(10.toSeconds))
+      .protocols(httpConf),
+
+    peakLoad.inject(nothingFor(15.toSeconds),
+      rampUsers(200).during(20.toSeconds)).protocols(httpConf)
+  )
+    .assertions(
+      details("Normal Load - limit of 100 concurrent users")
+      .responseTime.max.lte(2000),
+
+      details("Normal Load - 85% out of 100 concurrent users")
+      .responseTime.percentile(85).lte(2000),
+
+      details("Peak Load - limit of 200 concurrent users")
+      .responseTime.max.lte(5000)
+  )
 }
