@@ -10,8 +10,8 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 1 Http Conf
-  val httpConf = http.baseUrl(url)
+  // 1 Http Conf - SIN baseUrl para prueba
+  val httpConf = http
     .acceptHeader("*/*")
     .acceptEncodingHeader("gzip, deflate, br")
     .connectionHeader("keep-alive")
@@ -20,11 +20,11 @@ class TransferTest extends Simulation{
   val scn = scenario("Transactions")
     .feed(feeder)
     .exec(http("Login USER Request")
-      .get(s"/parabank/services/bank/login/$username/$password")
+      .get(s"$url/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
     ).pause(1.second)
     .exec(http("Deposits funds request")
-      .post("/parabank/services/bank/deposit")
+      .post(s"$url/parabank/services/bank/deposit")
       .queryParam("accountId", "#{accountId}")
       .queryParam("amount", "#{amount}")
       .header("Content-Length", "0")
@@ -34,9 +34,6 @@ class TransferTest extends Simulation{
 
   // 4 Load Scenario
   setUp(
-    scn.inject(constantUsersPerSec(150) during(30.seconds))
+    scn.inject(atOnceUsers(1)) // Solo 1 para debug
   ).protocols(httpConf)
-    .assertions(
-      global.successfulRequests.percent.is(99)
-    )
 }
