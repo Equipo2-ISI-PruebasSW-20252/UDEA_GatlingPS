@@ -22,9 +22,8 @@ class TransferTest extends Simulation{
       .check(status.is(200))
     ).pause(1.second)
     .exec(http("Deposits funds request")
-      .post("/parabank/services/bank/deposit")
-      .queryParam("accountId", "#{accountId}")
-      .queryParam("amount", "#{amount}")
+      .post("/parabank/services/bank/deposit/#{accountId}/#{amount}")
+
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
     ).pause(1.second)
