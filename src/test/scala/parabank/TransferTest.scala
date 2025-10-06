@@ -12,20 +12,23 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
-    .acceptHeader("application/json")
-    .acceptEncodingHeader("gzip, deflate, br")
-    .connectionHeader("keep-alive")
+    .acceptHeader("application/xml")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
     .feed(feeder)
-    .exec(http("Deposits funds request")
-      .post("/deposit")
-      .queryParam("accountId", "#{accountId}")
-      .queryParam("amount", "#{amount}")
+    .exec(http("Login USER Request")
+      .get(s"/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
-      .check(regex("Successfully deposited").exists)
     )
+    .pause(1.second)
+
+    .exec(http("Deposits funds request")
+      .post("/parabank/services/bank/transfer/#{fromAccountId}/#{toAccountId}/#{amount}")
+
+      .check(status.is(200))
+      .check(regex("Successfully transferred").exists)
+    ).pause(1.second)
 
   // 4 Load Scenario
   setUp(
