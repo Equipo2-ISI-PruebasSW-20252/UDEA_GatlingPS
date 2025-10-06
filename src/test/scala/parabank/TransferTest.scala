@@ -30,8 +30,8 @@ class TransferTest extends Simulation{
   // 4 Load Scenario
   setUp(
     scn.inject(constantUsersPerSec(150) during(30.seconds))
-  ).protocols(httpConf);
-//    .assertions(
-//      global.successfulRequests.percent.is(99)
-//    )
+  ).protocols(httpConf)
+    .assertions(
+      global.successfulRequests.percent.is(95)
+    )
 }
