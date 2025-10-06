@@ -12,23 +12,24 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
-    .acceptHeader("application/xml")
+    .acceptHeader("application/json")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
-    .feed(feeder)
     .exec(http("Login USER Request")
       .get(s"/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
     )
     .pause(1.second)
 
+    .feed(feeder)
     .exec(http("Transfer funds request")
-      .post("/parabank/services/bank/transfer/#{fromAccountId}/#{toAccountId}/#{amount}")
-      .body(StringBody("")).asXml
+      .post("/parabank/services/bank/transfer")
+      .queryParam("fromAccountId", "#{fromAccountId}")
+      .queryParam("toAccountId", "#{toAccountId}")
+      .queryParam("amount", "#{amount}")
 
       .check(status.is(200))
-      // Verificamos el mensaje de éxito de la transferencia
       .check(regex("Successfully transferred").exists)
     ).pause(1.second)
 
