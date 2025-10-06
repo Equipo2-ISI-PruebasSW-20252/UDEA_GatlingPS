@@ -12,35 +12,31 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
-    .acceptHeader("application/xml")
-    .disableFollowRedirect
+    .acceptHeader("*/*")
+    .acceptEncodingHeader("gzip, deflate, br")
+    .connectionHeader("keep-alive")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
-  .feed(feeder)
+    .feed(feeder)
     .exec(http("Login USER Request")
       .get(s"/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
     ).pause(1.second)
-
-    .exec { session =>
-      println(s"AccountId: ${session("accountId").as[String]}, Amount: ${session("amount").as[String]}")
-      session
-    }
-
     .exec(http("Deposits funds request")
       .post("/parabank/services/bank/deposit")
       .queryParam("accountId", "#{accountId}")
       .queryParam("amount", "#{amount}")
-      .header("accept", "application/xml")
-      .body(StringBody(""))
-
+      .header("Content-Length", "0")
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
     ).pause(1.second)
 
   // 4 Load Scenario
   setUp(
-    scn.inject(atOnceUsers(1)) // Solo 1 usuario para debug
+    scn.inject(constantUsersPerSec(150) during(30.seconds))
   ).protocols(httpConf)
+    .assertions(
+      global.successfulRequests.percent.is(99)
+    )
 }
