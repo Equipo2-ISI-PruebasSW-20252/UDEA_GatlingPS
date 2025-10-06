@@ -16,7 +16,7 @@ class LoginTest extends Simulation{
   // 2 Scenario Definition
   val scn = scenario("Login").
     exec(http("Login request")
-      .get(s"/login/$username/$password")
+      .get(s"/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
       .check(responseTimeInMillis.lte(2000))
     )
