@@ -10,26 +10,21 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 1 Http Conf - Habilitar cookies
-  val httpConf = http
-    .acceptHeader("*/*")
-    .shareConnections // Compartir conexiones para mantener sesión
+  // 1 Http Conf
+  val httpConf = http.baseUrl(url)
 
-  // 2 Scenario Definition
+  // 2 Scenario Definition - SIN LOGIN
   val scn = scenario("Transactions")
     .feed(feeder)
-    .exec(http("Login USER Request")
-      .get(s"$url/parabank/services/bank/login/$username/$password")
-      .check(status.is(200))
-      // No necesitamos guardar cookies explícitamente, Gatling lo hace automáticamente
-    ).pause(1.second)
     .exec(http("Deposits funds request")
-      .post(s"$url/parabank/services/bank/deposit?accountId=#{accountId}&amount=#{amount}")
-      .header("Content-Type", "application/x-www-form-urlencoded")
-      .body(StringBody(""))
+      .post("/parabank/services/bank/deposit?accountId=#{accountId}&amount=#{amount}")
+      .header("Accept", "*/*")
+      .header("Accept-Encoding", "gzip, deflate, br")
+      .header("Connection", "keep-alive")
+      .header("Content-Length", "0")
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
-    ).pause(1.second)
+    )
 
   // 4 Load Scenario
   setUp(
