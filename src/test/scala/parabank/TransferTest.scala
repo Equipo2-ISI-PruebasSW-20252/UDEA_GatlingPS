@@ -22,7 +22,7 @@ class TransferTest extends Simulation{
       .queryParam("accountId", "#{accountId}")
       .queryParam("amount", "#{amount}")
       .check(status.is(200))
-      .check(bodyString.shouldContain("Successfully deposited"))
+      .check(bodyString.is("Successfully deposited"))
     ).pause(1.second)
 
   // 4 Load Scenario
