@@ -25,6 +25,7 @@ class TransferTest extends Simulation{
 
     .exec(http("Transfer funds request")
       .post("/parabank/services/bank/transfer/#{fromAccountId}/#{toAccountId}/#{amount}")
+      .body(StringBody("")).asXml
 
       .check(status.is(200))
       // Verificamos el mensaje de éxito de la transferencia
