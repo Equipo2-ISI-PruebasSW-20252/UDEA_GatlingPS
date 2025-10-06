@@ -10,11 +10,9 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 1 Http Conf - SIN baseUrl para prueba
+  // 1 Http Conf
   val httpConf = http
     .acceptHeader("*/*")
-    .acceptEncodingHeader("gzip, deflate, br")
-    .connectionHeader("keep-alive")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
@@ -23,17 +21,21 @@ class TransferTest extends Simulation{
       .get(s"$url/parabank/services/bank/login/$username/$password")
       .check(status.is(200))
     ).pause(1.second)
+    .exec { session =>
+      val accountId = session("accountId").as[String]
+      val amount = session("amount").as[String]
+      val fullUrl = s"$url/parabank/services/bank/deposit?accountId=$accountId&amount=$amount"
+      println(s"=== FULL URL: $fullUrl ===")
+      session
+    }
     .exec(http("Deposits funds request")
-      .post(s"$url/parabank/services/bank/deposit")
-      .queryParam("accountId", "#{accountId}")
-      .queryParam("amount", "#{amount}")
-      .header("Content-Length", "0")
+      .post(s"$url/parabank/services/bank/deposit?accountId=#{accountId}&amount=#{amount}")
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
     ).pause(1.second)
 
   // 4 Load Scenario
   setUp(
-    scn.inject(atOnceUsers(1)) // Solo 1 para debug
+    scn.inject(atOnceUsers(1))
   ).protocols(httpConf)
 }
