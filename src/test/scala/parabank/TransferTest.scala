@@ -17,7 +17,7 @@ class TransferTest extends Simulation{
 
   // 3 Scenario Definition
   val scn = scenario("Transactions")
-    .exec(http("Login request")
+    .exec(http("Login request user")
       .get(s"/login/$username/$password")
       .check(status.is(200))
     )

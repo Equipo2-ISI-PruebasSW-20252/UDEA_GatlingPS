@@ -2,7 +2,7 @@ package parabank
 
 object Data{
     val url= "https://parabank.parasoft.com/parabank/services/bank"
-    val username = "pruebasoft"
-    val password = "password123"
+    val username = "john"
+    val password = "demo"
     val userid = "12212"
 }
