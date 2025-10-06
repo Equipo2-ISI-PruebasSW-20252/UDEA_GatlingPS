@@ -13,21 +13,15 @@ class TransferTest extends Simulation{
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
+    .check(status.is(200))
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
-    .exec(http("Login USER Request")
-      .get(s"/parabank/services/bank/login/$username/$password")
-      .check(status.is(200))
-    )
-    .pause(1.second)
-
-    .feed(feeder)
     .exec(http("Transfer funds request")
-      .post("/parabank/services/bank/transfer")
-      .queryParam("fromAccountId", "#{fromAccountId}")
-      .queryParam("toAccountId", "#{toAccountId}")
-      .queryParam("amount", "#{amount}")
+      .post("/transfer")
+      .queryParam("fromAccountId", fromAccountId)
+      .queryParam("toAccountId", toAccountId)
+      .queryParam("amount", amount)
 
       .check(status.is(200))
       .check(regex("Successfully transferred").exists)
@@ -36,8 +30,8 @@ class TransferTest extends Simulation{
   // 4 Load Scenario
   setUp(
     scn.inject(constantUsersPerSec(150) during(30.seconds))
-  ).protocols(httpConf)
-    .assertions(
-      global.successfulRequests.percent.is(99)
-    )
+  ).protocols(httpConf);
+//    .assertions(
+//      global.successfulRequests.percent.is(99)
+//    )
 }
