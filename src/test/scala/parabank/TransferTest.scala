@@ -20,12 +20,12 @@ class TransferTest extends Simulation{
     .exec(
       feed(feeder)
         .exec(http("Deposits funds request")
-          .post("/deposit")
+          .post("")
           .queryParam("accountId", "#{accountId}")
           .queryParam("amount", "#{amount}")
           .check(status.is(200))
           .check(
-            jsonPath("$.message").is("Successfully deposited $#{amount} to account ##{accountID}")
+            jsonPath("$.message").is("Successfully deposited $#{amount} to account ##{accountId}")
           )
         ).pause(1.second)
     )
