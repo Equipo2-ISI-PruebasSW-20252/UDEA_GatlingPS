@@ -23,7 +23,7 @@ class TransferTest extends Simulation{
     .exec(
       feed(feeder)
         .exec(http("Deposits funds request")
-          .post("/deposit")
+          .post(url + "/deposit")
           .queryParam("accountId", "#{accountId}")
           .queryParam("amount", "#{amount}")
           .check(status.is(200))
