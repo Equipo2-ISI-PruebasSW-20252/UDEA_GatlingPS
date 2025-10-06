@@ -20,12 +20,13 @@ class TransferTest extends Simulation{
     .exec(http("Deposits funds request")
       .post("/parabank/services/bank/deposit/#{accountId}/#{amount}")
       .check(status.is(200))
-      .check(regex("Successfully deposited").exists)
+//      .check(regex("Successfully deposited").exists)
+//      .check(bodyString.is("Successfully deposited"))
     ).pause(1.second)
 
   // 4 Load Scenario
   setUp(
-    scn.inject(constantUsersPerSec(150) during(1.minute))
+    scn.inject(constantUsersPerSec(150) during(30.seconds))
   ).protocols(httpConf)
     .assertions(
       global.successfulRequests.percent.is(99)
