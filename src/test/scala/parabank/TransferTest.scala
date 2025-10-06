@@ -13,6 +13,7 @@ class TransferTest extends Simulation{
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/xml")
+    .contentTypeHeader("application/x-www-form-urlencoded")
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
@@ -23,6 +24,7 @@ class TransferTest extends Simulation{
     ).pause(1.second)
     .exec(http("Deposits funds request")
       .post("/parabank/services/bank/deposit?accountId=#{accountId}&amount=#{amount}")
+      .body(StringBody("")).asFormUrlEncoded
 
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
