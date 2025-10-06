@@ -27,6 +27,7 @@ class TransferTest extends Simulation{
       .post("/parabank/services/bank/transfer/#{fromAccountId}/#{toAccountId}/#{amount}")
 
       .check(status.is(200))
+      // Verificamos el mensaje de éxito de la transferencia
       .check(regex("Successfully transferred").exists)
     ).pause(1.second)
 
