@@ -1,5 +1,6 @@
 package parabank
 
+import scala.concurrent.duration.DurationInt
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import parabank.Data._
