@@ -21,7 +21,6 @@ class TransferTest extends Simulation{
       .post("/parabank/services/bank/deposit")
       .queryParam("accountId", "#{accountId}")
       .queryParam("amount", "#{amount}")
-      .body(StringBody("")).asXml
       .check(status.is(200))
       .check(regex("Successfully deposited").exists)
     ).pause(1.second)
