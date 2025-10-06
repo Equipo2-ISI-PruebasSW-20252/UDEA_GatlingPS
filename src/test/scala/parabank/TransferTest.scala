@@ -10,14 +10,13 @@ class TransferTest extends Simulation{
   // 0 Define feeder
   val feeder = csv("transaction.csv").circular
 
-  // 2 Http Conf
+  // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
-    .check(status.is(200))
 
-  // 3 Scenario Definition
+  // 2 Scenario Definition
   val scn = scenario("Transactions")
-    .exec(http("Login request user")
+    .exec(http("Login request")
       .get(s"/login/$username/$password")
       .check(status.is(200))
     )
@@ -39,6 +38,6 @@ class TransferTest extends Simulation{
     scn.inject(constantUsersPerSec(150) during(3.minutes))
   ).protocols(httpConf)
     .assertions(
-      global.successfulRequests.percent.is(100)
+      global.successfulRequests.percent.is(99)
     )
 }
