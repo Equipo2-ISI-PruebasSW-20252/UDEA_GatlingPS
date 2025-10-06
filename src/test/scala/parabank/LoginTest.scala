@@ -51,4 +51,4 @@ class LoginTest extends Simulation{
 
       global.successfulRequests.percent.gt(95)
   )
-}
+}*/
