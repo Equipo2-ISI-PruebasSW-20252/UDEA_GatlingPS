@@ -40,10 +40,15 @@ class LoginTest extends Simulation{
       details("Normal Load - limit of 100 concurrent users")
       .responseTime.max.lte(2000),
 
-      details("Normal Load - 85% out of 100 concurrent users")
-      .responseTime.percentile(85).lte(2000),
+      details("Normal Load - 95% out of 100 concurrent users")
+      .responseTime.percentile(95).lte(2000),
 
       details("Peak Load - limit of 200 concurrent users")
-      .responseTime.max.lte(5000)
+      .responseTime.max.lte(5000),
+
+      details("Peak Load - 95% out of 200 concurrent users")
+        .responseTime.percentile(95).lte(5000),
+
+      global.successfulRequests.percent.gt(95)
   )
 }
