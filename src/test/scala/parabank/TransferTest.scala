@@ -12,11 +12,10 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf - Configurar para seguir redirects como Postman
   val httpConf = http.baseUrl(url)
-    .acceptHeader("application/json") // Cambio clave
+    .acceptHeader("application/json")
     .acceptEncodingHeader("gzip, deflate, br")
     .connectionHeader("keep-alive")
     // Por defecto Gatling sigue redirects, pero lo hacemos explícito
-    .disableFollowRedirect // Primero probemos SIN seguir redirects
 
   // 2 Scenario Definition - SIN LOGIN
   val scn = scenario("Transactions")
