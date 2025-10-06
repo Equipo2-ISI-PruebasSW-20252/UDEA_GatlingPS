@@ -1,4 +1,4 @@
-package parabank
+/*package parabank
 
 import scala.concurrent.duration.DurationInt
 import io.gatling.core.Predef._
