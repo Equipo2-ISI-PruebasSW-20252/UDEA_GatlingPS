@@ -18,10 +18,12 @@ class TransferTest extends Simulation{
   val scn = scenario("Transactions")
   .feed(feeder)
     .exec(http("Deposits funds request")
-      .post("/parabank/services/bank/deposit/#{accountId}/#{amount}")
+      .post("/parabank/services/bank/deposit")
+      .queryParam("accountId", "#{accountId}")
+      .queryParam("amount", "#{amount}")
+      .body(StringBody("")).asXml
       .check(status.is(200))
-//      .check(regex("Successfully deposited").exists)
-//      .check(bodyString.is("Successfully deposited"))
+      .check(regex("Successfully deposited").exists)
     ).pause(1.second)
 
   // 4 Load Scenario
