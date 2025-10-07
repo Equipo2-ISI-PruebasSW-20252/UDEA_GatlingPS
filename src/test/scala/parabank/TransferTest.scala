@@ -33,6 +33,6 @@ class TransferTest extends Simulation{
     scn.inject(constantUsersPerSec(150) during(30.seconds))
   ).protocols(httpConf)
     .assertions(
-      global.successfulRequests.percent.is(95)
+      global.successfulRequests.percent.gte(95)
     )
 }
