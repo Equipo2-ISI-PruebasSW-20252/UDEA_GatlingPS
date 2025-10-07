@@ -8,7 +8,7 @@ import parabank.Data._
 class TransferTest extends Simulation{
 
   // 0 Define feeder
-  val feeder = csv("data/transaction.csv").circular
+  val dataFeeder = csv("data/transaction.csv").circular
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
@@ -17,7 +17,7 @@ class TransferTest extends Simulation{
 
   // 2 Scenario Definition
   val scn = scenario("Transactions")
-    .feed(feeder)
+    .feed(dataFeeder)
     .exec(http("Transfer funds request")
       .post("/transfer")
       .queryParam("fromAccountId", "#{fromAccountId}")
