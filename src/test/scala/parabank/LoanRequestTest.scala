@@ -25,6 +25,8 @@ class LoanRequestTest extends Simulation{
       .queryParam("downPayment", "${downPayment}")
       .queryParam("fromAccountId", "${fromAccountId}")
       .check(status.is(200))
+      .check(jsonPath("$.approved").exists)
+      .check(jsonPath("$.approved").is("true"))
     )
 
   // 4 Load Scenario
