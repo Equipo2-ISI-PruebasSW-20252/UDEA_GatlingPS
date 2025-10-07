@@ -20,8 +20,8 @@ class TransferTest extends Simulation{
     .feed(dataFeeder)
     .exec(http("Transfer funds request")
       .post("/transfer")
-      .queryParam("fromAccountId", "#{fromAccountId}")
-      .queryParam("toAccountId", "#{toAccountId}")
+      .queryParam("fromAccountId", "${fromAccountId}")
+      .queryParam("toAccountId", "${toAccountId}")
       .queryParam("amount", "#{amount}")
 
       .check(status.is(200))
