@@ -9,10 +9,12 @@ class TransferTest extends Simulation{
 
   // 0 Define feeder
   val dataFeeder = csv("data/transaction.csv").circular
+  println("Feeder data: " + dataFeeder)
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
+    .contentTypeHeader("application/x-www-form-urlencoded")
     .check(status.is(200))
 
   // 2 Scenario Definition
@@ -20,9 +22,9 @@ class TransferTest extends Simulation{
     .feed(dataFeeder)
     .exec(http("Transfer funds request")
       .post("/transfer")
-      .queryParam("fromAccountId", "#{fromAccountId}")
-      .queryParam("toAccountId", "#{toAccountId}")
-      .queryParam("amount", "#{amount}")
+      .formParam("fromAccountId", "#{fromAccountId}")
+      .formParam("toAccountId", "#{toAccountId}")
+      .formParam("amount", "#{amount}")
 
       .check(status.is(200))
       .check(regex("Successfully transferred").exists)
