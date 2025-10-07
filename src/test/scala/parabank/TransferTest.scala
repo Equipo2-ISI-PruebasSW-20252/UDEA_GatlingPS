@@ -12,10 +12,7 @@ class TransferTest extends Simulation{
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
-//    .acceptHeader("application/json")
-    .basicAuth(username, password)
-    .acceptHeader("application/xml")
-    .contentTypeHeader("application/x-www-form-urlencoded")
+    .acceptHeader("application/json")
     .check(status.is(200))
 
   // 2 Scenario Definition
@@ -23,9 +20,9 @@ class TransferTest extends Simulation{
     .feed(dataFeeder)
     .exec(http("Transfer funds request")
       .post("/transfer")
-      .formParam("fromAccountId", "#{fromAccountId}")
-      .formParam("toAccountId", "#{toAccountId}")
-      .formParam("amount", "#{amount}")
+      .queryParam("fromAccountId", "#{fromAccountId}")
+      .queryParam("toAccountId", "#{toAccountId}")
+      .queryParam("amount", "#{amount}")
 
       .check(status.is(200))
       .check(regex("Successfully transferred").exists)
