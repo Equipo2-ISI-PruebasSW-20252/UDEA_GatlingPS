@@ -17,13 +17,19 @@ class PaymentServiceTest extends Simulation {
 
     // 3 Scenario Definition
     val scn = scenario("PaymentService")
-        .feed(paymentsFeeder)
-        .exec(http("PaymentService")
-            .post("/billpay")
-            .queryParam("accountId", "${accountId}")
-            .queryParam("amount", "${amount}")
-            .check(status.is(200))
-        )
+    .feed(paymentsFeeder)
+    .exec(
+      http("PaymentService")
+        .post("/billpay")
+        .header("Content-Type", "application/json")
+        .body(StringBody(
+          """{
+            "accountId": "${accountId}",
+            "amount": ${amount}
+          }"""
+        )).asJson
+        .check(status.is(200))
+    )
 
     // 4 Load Scenario
     setUp(
