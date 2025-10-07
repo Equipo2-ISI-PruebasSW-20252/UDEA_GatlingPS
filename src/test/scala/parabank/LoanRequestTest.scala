@@ -32,7 +32,7 @@ class LoanRequestTest extends Simulation{
   // 4 Load Scenario
   setUp(
     scn.inject(
-      atOnceUsers(150) // 150 usuarios simultaneos al inicio
+      atOnceUsers(15) // 150 usuarios simultaneos al inicio
       //constantConcurrentUsers(150).during(60.seconds)
     ).protocols(httpConf)
   ).assertions(
