@@ -8,7 +8,7 @@ import parabank.Data._
 class TransferTest extends Simulation{
 
   // 0 Define feeder
-  val feeder = csv("transaction.csv")
+  val feeder = csv("data/transaction.csv")
 
   // 1 Http Conf
   val httpConf = http.baseUrl(url)
