@@ -1,4 +1,4 @@
-/*package parabank
+package parabank
 
 import scala.concurrent.duration.DurationInt
 import io.gatling.core.Predef._
@@ -51,4 +51,4 @@ class LoginTest extends Simulation{
 
       global.successfulRequests.percent.gt(95)
   )
-}*/
+}
