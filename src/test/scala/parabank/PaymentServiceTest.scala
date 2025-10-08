@@ -40,6 +40,9 @@ class PaymentServiceTest extends Simulation {
           """
         )).asJson
         .check(status.is(200))
+        .check(jsonPath("$.payeeName").is("John Doe"))
+        .check(jsonPath("$.amount").is("${amount}"))
+        .check(jsonPath("$.accountId").is("${accountId}"))
     )
 
     // 4 Load Scenario
