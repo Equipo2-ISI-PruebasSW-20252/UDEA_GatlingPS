@@ -49,6 +49,6 @@ class PaymentServiceTest extends Simulation {
         ).protocols(httpConf)
     ).assertions(
         global.responseTime.mean.lte(3000),
-        //global.successfulRequests.percent.gte(99)
+        global.successfulRequests.percent.gte(99)
     )
 }
