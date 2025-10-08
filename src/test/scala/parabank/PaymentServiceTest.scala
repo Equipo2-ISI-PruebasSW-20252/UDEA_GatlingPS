@@ -10,7 +10,7 @@ class PaymentServiceTest extends Simulation {
     // 1 Http conf
     val httpConf = http.baseUrl(url)
         .acceptHeader("application/json")
-        .contentTypeHeader("application/x-www-form-urlencoded")
+        .contentTypeHeader("application/json")
         .check(status.is(200))
 
     // 2 Define feeder
@@ -22,8 +22,23 @@ class PaymentServiceTest extends Simulation {
     .exec(
       http("PaymentService")
         .post("/billpay")
-        .formParam("accountId", "13344")
-        .formParam("amount", "1")
+        .queryParam("accountId", "13344")
+        .queryParam("amount", "10")
+        .body(StringBody(
+          """
+          {
+            "name": "John Doe",
+            "address": {
+              "street": "Street 123",
+              "city": "Medellin",
+              "state": "CO",
+              "zipCode": "05001"
+            },
+            "phoneNumber": "3001112233",
+            "accountNumber": 13344
+          }
+          """
+        )).asJson
         .check(status.is(200))
     )
 
