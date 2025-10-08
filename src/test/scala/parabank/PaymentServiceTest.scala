@@ -22,8 +22,8 @@ class PaymentServiceTest extends Simulation {
     .exec(
       http("PaymentService")
         .post("/billpay")
-        .queryParam("accountId", "13344")
-        .queryParam("amount", "10")
+        .queryParam("accountId", "${accountId}")
+        .queryParam("amount", "${amount}")
         .body(StringBody(
           """
           {
