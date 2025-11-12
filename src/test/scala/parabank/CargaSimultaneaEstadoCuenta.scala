@@ -28,7 +28,7 @@ class CargaSimultaneaEstadoCuenta extends Simulation{
   setUp(
     scn.inject(
       atOnceUsers(200) // 200 usuarios simultaneos al inicio
-      constantConcurrentUsers(200).during(60.seconds) // 200 usuarios concurrentes durante 30 segundos
+      constantConcurrentUsers(200) during(60.seconds) // 200 usuarios concurrentes durante 30 segundos
     ).protocols(httpConf)
   ).assertions(
     global.responseTime.max.lte(3000),
